@@ -43,6 +43,7 @@
 #define SELECT_BG		"systemSelectedTextBackgroundColor"
 #define SELECT_FG		"systemSelectedTextColor"
 #define INACTIVE_SELECT_BG	"systemUnemphasizedSelectedTextBackgroundColor"
+#define INACTIVE_SELECT_FG	"systemSelectedTextColor"
 #define TROUGH			"#c3c3c3"
 #define INDICATOR		"#b03060"
 #define DISABLED		"systemDisabledControlTextColor"
@@ -517,7 +518,8 @@
 #define DEF_TEXT_PADX			"1"
 #define DEF_TEXT_PADY			"1"
 #define DEF_TEXT_RELIEF			"flat"
-#define DEF_TEXT_INACTIVE_SELECT_COLOR	INACTIVE_SELECT_BG
+#define DEF_TEXT_INACTIVE_SELECT_BG_COLOR INACTIVE_SELECT_BG
+#define DEF_TEXT_INACTIVE_SELECT_FG_COLOR INACTIVE_SELECT_FG
 #define DEF_TEXT_SELECT_COLOR		SELECT_BG
 #define DEF_TEXT_SELECT_MONO		BLACK
 #define DEF_TEXT_SELECT_BD_COLOR	"1"

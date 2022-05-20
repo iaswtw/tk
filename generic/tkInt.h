@@ -140,6 +140,67 @@
 #   define TCL_INDEX_TEMP_TABLE 64
 #endif
 
+/*
+ * Standard integer support (C99).
+ */
+
+#ifdef HAVE_STDINT_H
+#   include <stdint.h>
+#else
+/* work around for the support of ancient compilers */
+#   include "../compat/stdint.h"
+#endif
+
+
+/*
+ * Detection of >=64 bit architectures, which supports the use of
+ * the appropriate integer types. It's possible that we are detecting
+ * a 32 bit architecture although it's a 64 bit architecture, in this
+ * case a 32 bit system is installed on a 64 bit architecture.
+ */
+
+#ifdef HAVE_STDINT_H
+#   if (UINTPTR_MAX == 0xffffffffu)
+    /* This is quite likely a 32 bit architecture. */
+#	define TK_IS_32_BIT_ARCH
+#   elif (UINTPTR_MAX >= 0xffffffffffffffffu)
+    /* This is a real 64 bit architecture. */
+#	define TK_IS_64_BIT_ARCH
+#   else
+#	error "unsupported architecture" /* should never happen */
+#   endif
+#elif defined(_WIN64) /* ancient compiler support */
+    /* This is a real 64 bit architecture. */
+#   define TK_IS_64_BIT_ARCH
+#elif defined(_WIN32) /* ancient compiler support */
+    /* This is quite likely a 32 bit architecture. */
+#   define TK_IS_32_BIT_ARCH
+#else
+#   error "cannot detect architecture"
+#endif /* HAVE_STDINT_H */
+
+/*
+ * C99 inline support macros for the text widget.
+ */
+
+#ifdef _MSC_VER
+#   if defined(inline)
+#	define TK_C99_INLINE_SUPPORT
+#   elif _MSC_VER >= 1200
+#	define inline __inline
+#	define TK_C99_INLINE_SUPPORT
+#	define TK_C99_INLINE_DEFINED
+#   else
+#	define inline
+#	define TK_C99_INLINE_DEFINED
+#   endif
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#	define TK_C99_INLINE_SUPPORT
+#else
+#	define inline
+#	define TK_C99_INLINE_DEFINED
+#endif
+
 #ifndef TCL_Z_MODIFIER
 #   if defined(_WIN64)
 #	define TCL_Z_MODIFIER	"I"
@@ -1112,7 +1173,6 @@ MODULE_SCOPE const Tcl_ObjType tkColorObjType;
 MODULE_SCOPE const Tcl_ObjType tkCursorObjType;
 MODULE_SCOPE const Tcl_ObjType tkFontObjType;
 MODULE_SCOPE const Tcl_ObjType tkStateKeyObjType;
-MODULE_SCOPE const Tcl_ObjType tkTextIndexType;
 
 /*
  * Miscellaneous variables shared among Tk modules but not exported to the
@@ -1374,6 +1434,11 @@ MODULE_SCOPE int	TkParsePadAmount(Tcl_Interp *interp,
 			    int *pad1Ptr, int *pad2Ptr);
 MODULE_SCOPE void       TkFocusSplit(TkWindow *winPtr);
 MODULE_SCOPE void       TkFocusJoin(TkWindow *winPtr);
+#ifdef MAC_OSX_TK
+MODULE_SCOPE int	TkpDrawingIsDisabled(Tk_Window tkwin);
+#else
+# define TkpDrawingIsDisabled(tkwin) 0
+#endif
 MODULE_SCOPE void	TkpDrawCharsInContext(Display * display,
 			    Drawable drawable, GC gc, Tk_Font tkfont,
 			    const char *source, int numBytes, int rangeStart,

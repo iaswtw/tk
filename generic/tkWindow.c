@@ -1017,6 +1017,7 @@ TkCreateMainWindow(
 #ifdef PURIFY
 		".purify"
 #endif
+		".revised-text"
 #ifdef STATIC_BUILD
 		".static"
 #endif
